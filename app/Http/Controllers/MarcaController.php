@@ -64,7 +64,7 @@ class MarcaController extends Controller
      */
     public function destroy(Marca $marca)
     {
-        $brand = Marca::destroy($marca->id);
-        return $brand;
+        $marca->delete();
+        return ['msg' => 'Marca Deletada com Suscesso!'];
     }
 }
