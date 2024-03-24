@@ -17,6 +17,9 @@ class MarcaController extends Controller
     public function index()
     {
         $marcas = $this->marca->all();
+        if($marcas == '' || $marcas == '[]') {
+            return ['erro' => 'Nenhuma marca encontrada!'];
+        }
         //$marcas = Marca::all();
         return $marcas;
     }
@@ -45,6 +48,10 @@ class MarcaController extends Controller
     public function show($id)
     {
         $marca = $this->marca->find($id);
+        if($marca === null || $marca == '' ) {
+            return ['Erro' => 'Recurso Indisponível no momento!'];
+        }
+
         return $marca;
     }
 
@@ -63,6 +70,9 @@ class MarcaController extends Controller
     public function update(Request $request, $id)
     {
         $marca = $this->marca->find($id);
+        if($marca === null) {
+            return ['erro' => 'Impossível realizar a atualização. O recurso solicitado não foi encontrado.'];
+        }
         $marca->update($request->all());
         return $marca;
     }
@@ -73,6 +83,9 @@ class MarcaController extends Controller
     public function destroy($id)
     {
         $marca = $this->marca->find($id);
+        if($marca === null) {
+            return ['erro' => 'Impossível realizar a exclusão. O recurso solicitado não foi encontrado.'];
+        }
         $marca->delete();
         return ['msg' => 'Marca Deletada com Suscesso!'];
     }
