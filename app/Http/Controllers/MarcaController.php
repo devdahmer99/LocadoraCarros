@@ -38,7 +38,7 @@ class MarcaController extends Controller
     public function store(Request $request)
     {
         $marca = $this->marca->create($request->all());
-        return $marca;  
+        return response()->json($marca, 201);  
     }
 
     /**
