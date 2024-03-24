@@ -18,10 +18,10 @@ class MarcaController extends Controller
     {
         $marcas = $this->marca->all();
         if($marcas == '' || $marcas == '[]') {
-            return ['erro' => 'Nenhuma marca encontrada!'];
+            return response()->json(['erro' => 'Nenhum registro encontrado.'], 404);
         }
         //$marcas = Marca::all();
-        return $marcas;
+        return response()->json($marcas, 200);
     }
 
     /**
@@ -49,10 +49,10 @@ class MarcaController extends Controller
     {
         $marca = $this->marca->find($id);
         if($marca === null || $marca == '' ) {
-            return response()->json(['Erro' => 'Recurso Indisponível no momento!'], 404);
+            return response()->json(['Erro' => 'Registro não encontrado.'], 404);
         }
 
-        return $marca;
+        return response()->json($marca, 200);
     }
 
     /**
@@ -71,10 +71,10 @@ class MarcaController extends Controller
     {
         $marca = $this->marca->find($id);
         if($marca === null) {
-            return response()->json(['erro' => 'Impossível realizar a atualização. O recurso solicitado não foi encontrado.'], 404);
+            return response()->json(['erro' => 'Impossível realizar a atualização. O registro solicitado não foi encontrado.'], 404);
         }
         $marca->update($request->all());
-        return $marca;
+        return response()->json($marca, 200);
     }
 
     /**
@@ -84,9 +84,9 @@ class MarcaController extends Controller
     {
         $marca = $this->marca->find($id);
         if($marca === null) {
-            return response()->json(['erro' => 'Impossível realizar a exclusão. O recurso solicitado não foi encontrado.'], 404);
+            return response()->json(['erro' => 'Impossível realizar a exclusão. O registro solicitado não foi encontrado.'], 404);
         }
         $marca->delete();
-        return ['msg' => 'Marca Deletada com Suscesso!'];
+        return response()->json(['msg' => 'Registro deletado com Suscesso!'], 200);
     }
 }
