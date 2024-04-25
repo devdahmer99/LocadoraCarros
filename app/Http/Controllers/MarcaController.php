@@ -11,9 +11,7 @@ class MarcaController extends Controller
         $this->marca = $marca;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         $marcas = $this->marca->all();
@@ -24,30 +22,14 @@ class MarcaController extends Controller
         return response()->json($marcas, 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $regras = [
-            'nome' => 'required|unique:marcas',
-            'imagem' => 'required'
-        ];
-
-        $feedback = [
-            'required' => 'O campo :attribute é obrigatório.',
-            'nome.unique' => 'Marca já cadastrada no sistema.'
-        ];
-
-        $request->validate($regras, $feedback);
+        $request->validate($this->marca->rules(), $this->marca->feedback());
 
         $marca = $this->marca->create($request->all());
         return response()->json($marca, 201);  
@@ -67,9 +49,6 @@ class MarcaController extends Controller
         return response()->json($marca, 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Marca $marca)
     {
         //
@@ -89,9 +68,6 @@ class MarcaController extends Controller
         return response()->json($marca, 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
         $marca = $this->marca->find($id);
