@@ -64,7 +64,20 @@ class MarcaController extends Controller
         if($marca === null) {
             return response()->json(['erro' => 'Impossível realizar a atualização. O registro solicitado não foi encontrado.'], 404);
         }
-        $request->validate($marca->rules(), $marca->feedback());
+      
+        if($request->method() === 'PATCH') {
+            $regraDinamica = array();
+
+            foreach($marca->rules() as $indice => $regra) {
+                if(array_key_exists($indice, $request->all())) {
+                    $regraDinamica[$indice] = $regra;
+                }
+            }
+            $request->validate($regraDinamica, $marca->feedback());
+        } else {
+            $request->validate($marca->rules(), $marca->feedback());
+        }
+        
         $marca->update($request->all());
         return response()->json($marca, 200);
     }
