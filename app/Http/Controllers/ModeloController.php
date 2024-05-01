@@ -49,7 +49,7 @@ class ModeloController extends Controller
             'imagem' => $image_urn,
             'portas' => $request->portas,
             'lugares' => $request->lugares,
-            'air-bag' => $request->air_bag,
+            'air_bag' => $request->air_bag,
             'abs' => $request->abs
         ]);
 
@@ -62,7 +62,7 @@ class ModeloController extends Controller
      */
     public function show($id)
     {
-        $modelo = $this->modelo->find($id);
+        $modelo = $this->modelo->with('marca')->find($id);
         if($modelo === null || $modelo == '' ) {
             return response()->json(['Erro' => 'Registro não encontrado.'], 404);
         }
@@ -81,7 +81,7 @@ class ModeloController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Modelo $modelo)
+    public function update(Request $request, $id)
     {
         $modelo = $this->modelo->find($id);
 
@@ -97,9 +97,9 @@ class ModeloController extends Controller
                     $regraDinamica[$indice] = $regra;
                 }
             }
-            $request->validate($regraDinamica, $modelo->feedback());
+            $request->validate($regraDinamica);
         } else {
-            $request->validate($modelo->rules(), $modelo->feedback());
+            $request->validate($modelo->rules());
         }    
 
         //Remove o arquivo antigo, caso um novo arquivo tenha sido upado no request
@@ -137,6 +137,6 @@ class ModeloController extends Controller
         Storage::disk('public')->delete($modelo->imagem);
 
         $modelo->delete();
-        return response()->json(['msg' => 'Registro deletado com Suscesso!'], 200);
+        return response()->json(['msg' => 'Modelo deletado com Suscesso!'], 200);
     }
 }

@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Modelo;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Marca extends Model
 {
@@ -25,5 +26,9 @@ class Marca extends Model
             'imagem.mimes' => 'Formato de arquivo não suportado'
 
         ];
+    }
+
+    public function Modelos() {
+        return $this->hasMany(Modelo::class);
     }
 }

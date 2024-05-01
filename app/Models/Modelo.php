@@ -9,6 +9,8 @@ class Modelo extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = ['marca_id', 'nome', 'imagem', 'portas', 'lugares', 'air_bag', 'abs'];
 
     public function rules() {
@@ -21,5 +23,9 @@ class Modelo extends Model
             'air_bag' => 'required|boolean',
             'abs' => 'required|boolean'
         ];
+    }
+
+    public function Marca() {
+        return $this->belongsTo(Marca::class);
     }
 }
