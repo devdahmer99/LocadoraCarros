@@ -16,7 +16,7 @@ class MarcaController extends Controller
 
     public function index()
     {
-        $marcas = $this->marca->all();
+        $marcas = $this->marca->with('modelos')->get();
         if($marcas == '' || $marcas == '[]') {
             return response()->json(['erro' => 'Nenhum registro encontrado.'], 404);
         }

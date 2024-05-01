@@ -18,7 +18,7 @@ class ModeloController extends Controller
      */
     public function index()
     {
-        $modelos = $this->modelo->all();
+        $modelos = $this->modelo->with('marca')->get();
         if($modelos == '' || $modelos == '[]') {
             return response()->json(['erro' => 'Nenhum registro encontrado.'], 404);
         }
