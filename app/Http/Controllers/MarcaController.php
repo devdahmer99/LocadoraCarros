@@ -20,7 +20,6 @@ class MarcaController extends Controller
         if($marcas == '' || $marcas == '[]') {
             return response()->json(['erro' => 'Nenhum registro encontrado.'], 404);
         }
-        //$marcas = Marca::all();
         return response()->json($marcas, 200);
     }
 
