@@ -14,12 +14,43 @@ class MarcaController extends Controller
     }
 
 
-    public function index()
+    public function index(Request $request)
     {
-        $marcas = $this->marca->with('modelos')->get();
+        $marcas = array();
+
         if($marcas == '' || $marcas == '[]') {
             return response()->json(['erro' => 'Nenhum registro encontrado.'], 404);
         }
+
+        /*
+        Eu apenas criei essas validações e implementação para fins de uso futuro
+        no momento este endpoint ira retornar todos os modelos e as suas associações
+        com as devidas marcas pelo seu ID.
+        Mas caso seja necessário o uso, já esta funcional.
+        */
+
+        if($request->has('atributos_modelos')) {
+            $atributos_modelos = $request->atributos_modelos;
+            $marcas = $this->marca->with('modelos:id,'.$atributos_modelos);
+        } else {
+            $marcas = $this->marca->with('modelos');
+        }
+
+        if($request->has('filtro')) {
+            $filtros = explode(';', $request->filtro);
+            foreach($filtros as $key => $condicao) {
+                $cond = explode(':',$condicao);
+                $marcas = $marcas->where($cond[0], $cond[1], $cond[2]);
+            }
+        }
+
+        if($request->has('atributos')) {
+            $atributos = $request->atributos;
+            $marcas = $marcas->selectRaw($atributos)->get();
+        } else {
+            $marcas = $marcas->get();
+        };
+
         return response()->json($marcas, 200);
     }
 
