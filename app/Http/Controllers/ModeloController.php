@@ -16,12 +16,43 @@ class ModeloController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $modelos = $this->modelo->with('marca')->get();
+        $modelos = array();
+
         if($modelos == '' || $modelos == '[]') {
             return response()->json(['erro' => 'Nenhum registro encontrado.'], 404);
         }
+
+        /*
+        Eu apenas criei essas validações e implementação para fins de uso futuro
+        no momento este endpoint ira retornar todos os modelos e as suas associações
+        com as devidas marcas pelo seu ID.
+        Mas caso seja necessário o uso, já esta funcional.
+        */
+
+        if($request->has('atributos_marca')) {
+            $atributos_marca = $request->atributos_marca;
+            $modelos = $this->modelo->with('marca:id,'.$atributos_marca);
+        } else {
+            $modelos = $this->modelo->with('marca');
+        }
+
+        if($request->has('filtro')) {
+            $filtros = explode(';', $request->filtro);
+            foreach($filtros as $key => $condicao) {
+                $cond = explode(':',$condicao);
+                $modelos = $modelos->where($cond[0], $cond[1], $cond[2]);
+            }
+        }
+
+        if($request->has('atributos')) {
+            $atributos = $request->atributos;
+            $modelos = $modelos->selectRaw($atributos)->get();
+        } else {
+            $modelos = $modelos->get();
+        };
+
         return response()->json($modelos, 200);
     }
 
