@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Storage;
 use App\Models\Marca;
+use App\Repositories\MarcaRepository;
 use Illuminate\Http\Request;
 
 
@@ -16,42 +17,24 @@ class MarcaController extends Controller
 
     public function index(Request $request)
     {
-        $marcas = array();
-
-        if($marcas == '' || $marcas == '[]') {
-            return response()->json(['erro' => 'Nenhum registro encontrado.'], 404);
-        }
-
-        /*
-        Eu apenas criei essas validações e implementação para fins de uso futuro
-        no momento este endpoint ira retornar todos os modelos e as suas associações
-        com as devidas marcas pelo seu ID.
-        Mas caso seja necessário o uso, já esta funcional.
-        */
-
+        $marcaRepository = new MarcaRepository($this->marca);
+    
         if($request->has('atributos_modelos')) {
-            $atributos_modelos = $request->atributos_modelos;
-            $marcas = $this->marca->with('modelos:id,'.$atributos_modelos);
+            $atributos_modelos = 'modelos:id,' . $request->atributos_modelos;
+            $marcaRepository->selectRegistrosModelos($atributos_modelos);
         } else {
-            $marcas = $this->marca->with('modelos');
+            $marcaRepository->selectRegistrosModelos('modelos');
         }
 
         if($request->has('filtro')) {
-            $filtros = explode(';', $request->filtro);
-            foreach($filtros as $key => $condicao) {
-                $cond = explode(':',$condicao);
-                $marcas = $marcas->where($cond[0], $cond[1], $cond[2]);
-            }
-        }
+            $marcaRepository->selectByFiltro($request->filtro);
+        }        
 
         if($request->has('atributos')) {
-            $atributos = $request->atributos;
-            $marcas = $marcas->selectRaw($atributos)->get();
-        } else {
-            $marcas = $marcas->get();
-        };
+            $marcaRepository->selectAtributosMarca($request->atributos);
+        } 
 
-        return response()->json($marcas, 200);
+        return response()->json($marcaRepository->getResultado(), 200);
     }
 
     public function create()
