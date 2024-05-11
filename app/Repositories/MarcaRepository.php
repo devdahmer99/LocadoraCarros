@@ -26,8 +26,11 @@ class MarcaRepository {
         $this->model = $this->model->selectRaw($atributos)->get();
     }
 
+    
+
     public function getResultado() {
-        return $this->model->get();
+        //dd($this->model);
+        return $this->model->all();
     }
 
 }
